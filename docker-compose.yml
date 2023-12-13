@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  customerapp.webapi:
+    hostname: customer-siemens
+    image: ${DOCKER_REGISTRY-}customerappwebapi
+    build:
+      context: .
+      dockerfile: CustomerApp.WebAPI/Dockerfile
+    ports:
+      - "5000:80"
+    networks:
+      - customer-network
+
+  sqldata:
+    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    restart: always
+    environment:
+      - SA_PASSWORD=qAcW24-,@qoLT_Y
+      - ACCEPT_EULA=Y
+    ports:
+      - 1433:1433
+    networks:
+      - customer-network
+    volumes:
+      - my-datavolume:/var/lib/mysql
+
+volumes:
+  my-datavolume:
+
+networks:
+    customer-network:
+        name: customer-network
